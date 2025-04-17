@@ -14,6 +14,13 @@ Project("") = "MainTest", "MainTest\Test.tsp", "FF7A9EAD-D0B4-4A03-B096-88E135F1
 		PathInformation = C:\UFT\FlightGUI_Automation\TestScripts\MainTest\Test.tsp
 		Keyword = QTP
 		OpenAsReadOnly = False
+	EndProjectSection
+EndProject
+Project("") = "ADODBIntegrationWithExcel", "ADODBIntegrationWithExcel\Test.tsp", "9BB6AA1E-5D57-4220-8AD5-8B4EE55F5046"
+	ProjectSection(ProjectMetadata) = HP.UFT.ProjectSystem.Dynamic.ProjectMetadata
+		PathInformation = C:\UFT\FlightGUI_Automation\TestScripts\ADODBIntegrationWithExcel\Test.tsp
+		Keyword = QTP
+		OpenAsReadOnly = False
 		BaselineId = 
 	EndProjectSection
 EndProject
@@ -31,6 +38,10 @@ Global
 		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Release|Any CPU.Build.0 = Release|Any CPU
 		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Release|Any CPU.ActiveCfg = Release|Any CPU
+		9BB6AA1E-5D57-4220-8AD5-8B4EE55F5046.Debug|Any CPU.Build.0 = Debug|Any CPU
+		9BB6AA1E-5D57-4220-8AD5-8B4EE55F5046.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		9BB6AA1E-5D57-4220-8AD5-8B4EE55F5046.Release|Any CPU.Build.0 = Release|Any CPU
+		9BB6AA1E-5D57-4220-8AD5-8B4EE55F5046.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(Function Libraries) = postProject
 		CommonLib = C:\UFT\FlightGUI_Automation\FunctionLibrary\CommonLib.qfl
