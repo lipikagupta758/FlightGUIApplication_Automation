@@ -1,0 +1,77 @@
+﻿' ================================================================================================
+' This Function Library contains the functions to navigate through the excel sheets, 
+' Login Test Sheet, NewOrder Test Sheet, SearchOrder Test Sheet  
+' Called in MainTest
+' ================================================================================================
+
+Sub ExecuteLoginTestCases(TCID, TC_Desc)
+	rows= DataTable.GetSheet("Login").GetRowCount
+	For i = 1 To rows Step 1
+		DataTable.GetSheet("Login").SetCurrentRow(i)
+		If DataTable.Value("TC_ID", "Login")= TCID Then
+			username= DataTable.Value("Username", "Login")
+			password= DataTable.Value("Password", "Login")
+			loginApp username, password, TC_Desc
+		End If
+	Next
+End Sub
+
+Sub ExecuteNewOrderTestCases(TCID)
+	rows= DataTable.GetSheet("NewOrder").GetRowCount
+	For i = 1 To rows Step 1
+		DataTable.GetSheet("NewOrder").SetCurrentRow(i)
+		If DataTable.Value("TC_ID", "NewOrder")= TCID Then
+			flyFrom= DataTable.Value("FlyFrom", "NewOrder")
+			flyTo= DataTable.Value("FlyTo", "NewOrder")
+			selectDate= DataTable.Value("SelectDate", "NewOrder")
+			chooseClass= DataTable.Value("Class", "NewOrder")
+			noOfTickets= DataTable.Value("Number_Of_Tickets", "NewOrder")
+			flightId= DataTable.Value("FlightId", "NewOrder")
+			passengerName= DataTable.Value("PassengerName", "NewOrder")
+			
+			bookTicket flyFrom, flyTo, selectDate, chooseClass, noOfTickets, flightId, passengerName
+		End If
+	Next
+End Sub
+
+Sub ExecuteSearchOrderTestCases(TCID, tc_desc)
+	Dim arr(1)
+	sheetName= "SearchOrder"
+	rows= DataTable.GetSheet(sheetName).GetRowCount
+	For i = 1 To rows Step 1
+		DataTable.GetSheet(sheetName).SetCurrentRow(i)
+		If DataTable.Value("TC_ID", sheetName)= TCID Then
+			hasName = CreateRegEx("name").Test(tc_desc)
+			hasDate = CreateRegEx("date").Test(tc_desc)
+			hasOrderNo = CreateRegEx("order\s*number").Test(tc_desc)
+			
+			If hasName Or hasDate Or hasOrderNo Then
+    				Dim name, orderDate, orderNo
+    				If hasName Then 
+    					name = DataTable.Value("Name", sheetName)
+    				End  If
+    				If hasDate Then 
+    					orderDate = DataTable.Value("Date", sheetName)
+    				End  If
+    				If hasOrderNo Then 
+    					orderNo = DataTable.Value("OrderNo", sheetName)
+    				End  If
+    					
+    				If hasName And hasDate Then
+    					arr(0)= name
+    					arr(1)= orderDate
+        				searchOrder arr
+    				ElseIf hasName Then
+    					arr(0)= name
+        				searchOrder arr
+    				ElseIf hasDate Then
+    					arr(0)= orderDate
+        				searchOrder arr
+        			Else  
+        				arr(0)= orderNo
+        				searchOrder arr
+        			End If
+        		End  If
+		End If
+	Next
+End Sub

@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+# SharpDevelop 4.1.3.0
+Project("") = "ADODB_Connection", "ADODB_Connection\Test.tsp", "4AB73EB6-337F-460C-9CAD-119D8E532E0F"
+	ProjectSection(ProjectMetadata) = HP.UFT.ProjectSystem.Dynamic.ProjectMetadata
+		PathInformation = C:\UFT\FlightGUI_Automation\TestScripts\ADODB_Connection\Test.tsp
+		Keyword = QTP
+		OpenAsReadOnly = False
+	EndProjectSection
+EndProject
+Project("") = "MainTest", "MainTest\Test.tsp", "FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF"
+	ProjectSection(ProjectMetadata) = HP.UFT.ProjectSystem.Dynamic.ProjectMetadata
+		PathInformation = C:\UFT\FlightGUI_Automation\TestScripts\MainTest\Test.tsp
+		Keyword = QTP
+		OpenAsReadOnly = False
+		BaselineId = 
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		4AB73EB6-337F-460C-9CAD-119D8E532E0F.Debug|Any CPU.Build.0 = Debug|Any CPU
+		4AB73EB6-337F-460C-9CAD-119D8E532E0F.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		4AB73EB6-337F-460C-9CAD-119D8E532E0F.Release|Any CPU.Build.0 = Release|Any CPU
+		4AB73EB6-337F-460C-9CAD-119D8E532E0F.Release|Any CPU.ActiveCfg = Release|Any CPU
+		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Debug|Any CPU.Build.0 = Debug|Any CPU
+		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Release|Any CPU.Build.0 = Release|Any CPU
+		FF7A9EAD-D0B4-4A03-B096-88E135F1C4DF.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(Function Libraries) = postProject
+		CommonLib = C:\UFT\FlightGUI_Automation\FunctionLibrary\CommonLib.qfl
+	EndGlobalSection
+EndGlobal

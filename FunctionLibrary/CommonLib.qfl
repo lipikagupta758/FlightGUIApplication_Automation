@@ -1,0 +1,106 @@
+﻿' ================================================================================================
+' This Function Library contains the function to initialize the folder paths available in framework, 
+' create a RegEx pattern, handling error and sending an email
+' ================================================================================================
+Public testDataFolderPath, resultsFolderPath, objectRepositoryFolderPath, functionLibraryFolderPath
+
+'This function sets up path of result folder, test data folder,  function library folder and object repository folder
+Public Function Initialization()
+	testDir= Environment.Value("TestDir")
+	arrPath= Split(testDir, "\")
+	
+	'Getting the path for test cases excel sheet
+	arrPath(UBound(arrPath)-1)= "TestData"
+	arrPath(UBound(arrPath))=""
+	testDataFolderPath= ""
+	For I=0 to UBound(arrPath)-1
+		If (I=0) Then
+			testDataFolderPath = arrPath(I)
+		Else
+			testDataFolderPath = testDataFolderPath + "\" + arrPath(I)
+		End If
+	Next
+	testDataFolderPath= testDataFolderPath & "\"
+	
+	'Getting the path for Results folder
+	arrPath(UBound(arrPath)-1)= "Results"
+	arrPath(UBound(arrPath))=""
+	resultsFolderPath=""
+	For I=0 to UBound(arrPath)-1
+		If (I=0) Then
+			resultsFolderPath = arrPath(I)
+		Else
+			resultsFolderPath =  resultsFolderPath+ "\" + arrPath(I)
+		End If
+	Next
+	resultsFolderPath= resultsFolderPath & "\"
+	
+	'Getting the path for FunctionLibrary folder
+	arrPath(UBound(arrPath)-1)= "FunctionLibrary"
+	arrPath(UBound(arrPath))=""
+	functionLibraryFolderPath=""
+	For I=0 to UBound(arrPath)-1
+		If (I=0) Then
+			functionLibraryFolderPath = arrPath(I)
+		Else
+			functionLibraryFolderPath =  functionLibraryFolderPath+ "\" + arrPath(I)
+		End If
+	Next
+	functionLibraryFolderPath= functionLibraryFolderPath & "\"
+	
+	'Getting the path for ObjectRepository folder
+	arrPath(UBound(arrPath)-1)= "ObjectRepository"
+	arrPath(UBound(arrPath))=""
+	objectRepositoryFolderPath=""
+	For I=0 to UBound(arrPath)-1
+		If (I=0) Then
+			objectRepositoryFolderPath = arrPath(I)
+		Else
+			objectRepositoryFolderPath =  objectRepositoryFolderPath+ "\" + arrPath(I)
+		End If
+	Next
+	objectRepositoryFolderPath= objectRepositoryFolderPath & "\"
+End Function
+
+'Function to create a RegExp pattern
+Public Function CreateRegEx(pattern)
+	Set regexp= CreateObject("VBScript.RegExp")
+	regexp.Global= True
+	regexp.IgnoreCase = True
+	regexp.Pattern = pattern
+	Set CreateRegEx= regExp
+End Function
+
+'Function for error handling
+Public Function HandleErrorAndExit(testCaseName)
+	If Err.Number <> 0 Then
+       		Reporter.ReportEvent micFail, testCaseName & " - Failed", "Error: " & Err.Description
+       		LogResult micFail, testCaseName & " - Failed", "Error: " & Err.Description
+        	Err.Clear
+        	If testCaseName="Login" Then
+        		TestCaseExecutiveSummary ()
+        		ExitTest
+        	End If
+    	End If
+End Function
+
+Public Function SendMail()
+Set olApp = CreateObject("Outlook.Application")
+Set olMail = olApp.CreateItem(0) ' 0 = olMailItem
+
+With olMail
+    .To = ""     'Enter an email to send custom html reports
+    .CC = ""    'Enter an email in CC to send custom html reports
+    .Subject = "UFT Test Report"
+    .Body = "Hi Team," & vbCrLf & _
+            "Please find attached the test report and screenshot." & vbCrLf & _
+            "Regards," & vbCrLf & "Automation Bot"
+    
+    ' Attach screenshot or any file
+    .Attachments.Add resultsFolderPath& "HTMLReport.html"
+    '.Attachments.Add resultFolderPath & "ErrorSnapshot"
+    
+    ' Send the email
+    .Send
+End With
+End  Function

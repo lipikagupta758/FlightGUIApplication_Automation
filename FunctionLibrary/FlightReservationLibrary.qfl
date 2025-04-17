@@ -1,0 +1,148 @@
+﻿' ================================================================================================
+' This Function Library contains the function to launch the app, login, booking a new ticket, search for existing orders, 
+'  verify the login and closing the app
+' ================================================================================================
+Function launchApp()
+	SystemUtil.Run "C:\Program Files (x86)\OpenText\UFT One\samples\Flights Application\FlightsGUI.exe"
+	If WpfWindow("OpenText MyFlight Sample").WpfButton("OK").Exist Then
+		Reporter.ReportEvent micPass, "Launch Application", "App has been successfully launched"
+		LogResult micPass,  "Launch Application", "App has been successfully launched"
+	Else
+		Reporter.ReportEvent micFail, "Launch Application", "Login failed"
+		LogResult micFail,  "Unable to launch Application", "App has not been launched"
+	End If
+End Function
+
+Function loginApp(username, password, TC_Desc)
+	On Error Resume Next
+
+	WpfWindow("OpenText MyFlight Sample").WpfEdit("agentName").Set username
+	WpfWindow("OpenText MyFlight Sample").WpfEdit("password").Set password
+	WpfWindow("OpenText MyFlight Sample").WpfButton("OK").Click
+	
+	pattern= "invalid"
+	Set regExp= CreateRegEx(pattern)
+	If regExp.Test(CStr(TC_Desc)) Then
+    		If Not WpfWindow("OpenText MyFlight Sample").WpfButton("FIND FLIGHTS").Exist Then
+		       Reporter.ReportEvent micPass, "Invalid Login", "Login is successfully not done"
+		       LogResult micPass, "Invalid Login", "Login is successfully not done"
+		       WpfWindow("OpenText MyFlight Sample").Dialog("Login Failed").WinButton("OK").Click
+			Exit Function
+		Else
+			Reporter.ReportEvent micFail, "Invalid Login", "User has been logged in with invalid credentials"
+			LogResult micFail, "Invalid Login", "User has been logged in with invalid credentials"
+			WpfWindow("OpenText MyFlight Sample").Dialog("Login Failed").WinButton("OK").Click
+			Exit Function
+		End If
+	End If
+	
+	If WpfWindow("OpenText MyFlight Sample").WpfButton("FIND FLIGHTS").Exist Then
+		Reporter.ReportEvent micPass, "Login", "User has been successfully logged in"
+		LogResult micPass, "Login", "User has been successfully logged in"
+	Else
+		'Reporter.ReportEvent micFail, "Login", "Login has been failed"
+		'LogResult micFail, "Login", "Login has been failed"
+		Err.Raise vbObjectError + 1000, "Login", "Login failed due to incorrect credentials"
+		HandleErrorAndExit("Login")
+	End If
+
+End Function
+	
+Function verifyLogin()
+	If WpfWindow("OpenText MyFlight Sample").WpfObject("usernameDisplayAfterLogin").Exist Then
+		Reporter.ReportEvent micPass, "Login", "Login Successfully Done"
+	Else
+		Reporter.ReportEvent micFail, "Login", "Login failed"
+	End If
+End Function
+
+Function bookTicket(flyFrom, flyTo, selectDate, chooseClass, noOfTickets, flightId, passengerName)
+	On Error Resume Next
+	Set descFrom = Description.Create
+	descFrom("micclass").Value = "WpfComboBox"
+	descFrom("wpftypename").Value = "combo box"
+
+	Set comboBox = WpfWindow("OpenText MyFlight Sample").ChildObjects(descFrom)
+    	comboBox(0).Select flyFrom
+    	comboBox(1).Select flyTo
+	WpfWindow("OpenText MyFlight Sample").WpfCalendar("datePicker").SetDate selectDate
+	comboBox(2).Select chooseClass
+	comboBox(3).Select noOfTickets
+	WpfWindow("OpenText MyFlight Sample").WpfButton("FIND FLIGHTS").Click
+	
+	Set flightsDetail= WpfWindow("OpenText MyFlight Sample").WpfTable("chooseflightsData")
+	rows= flightsDetail.RowCount
+	For i = 0 To rows-1 Step 1
+		flightNo= flightsDetail.GetCellData(i, 4)
+		If flightNo= flightId Then
+			flightsDetail.SelectRow(i)
+			WpfWindow("OpenText MyFlight Sample").WpfButton("SELECT FLIGHT").Click
+			Exit For
+		End If
+	Next
+	
+	WpfWindow("OpenText MyFlight Sample").WpfEdit("passengerName").Set passengerName
+	WpfWindow("OpenText MyFlight Sample").WpfButton("ORDER").Click
+
+	If WpfWindow("OpenText MyFlight Sample").WpfObject("Order completed").Exist Then
+		Reporter.ReportEvent micPass, "NewOrder", "Tickets has been booked successfully"
+		LogResult micPass, "NewOrder", "Tickets has been booked successfully"
+	Else
+		'Reporter.ReportEvent micFail, "NewOrder", "Ticket Booking is unsuccessful"
+		'LogResult micFail, "NewOrder", "Ticket Booking is unsuccessful"
+		Err.Raise vbObjectError + 1000, "NewOrder", "Ticket Booking is unsuccessful"
+		HandleErrorAndExit("NewOrder")
+	End If
+	WpfWindow("OpenText MyFlight Sample").WpfButton("NEW SEARCH").Click
+End Function
+
+Function searchOrder(data())
+	On Error Resume Next
+	Set searchBar= Description.Create
+	searchBar("micclass").Value= "WpfTabStrip"
+	searchBar("all items").Value= "BOOK FLIGHT\nSEARCH ORDER"
+	Set tabStrip= WpfWindow("OpenText MyFlight Sample").ChildObjects(searchBar)
+	tabStrip(0).Select "SEARCH ORDER"
+	
+	Set radioButton= Description.Create
+	radioButton("micclass").Value= "WpfRadioButton"
+	radioButton("wpftypename").Value= "radio button"
+	Set radioBtn= WpfWindow("OpenText MyFlight Sample").ChildObjects(radioButton)
+	If IsNumeric(data(0)) Then
+		radioBtn(1).Click
+       		WpfWindow("OpenText MyFlight Sample").WpfEdit("byNumberWatermark").Set data(0)
+       		WpfWindow("OpenText MyFlight Sample").WpfButton("SEARCH").Click
+	Else
+		radioBtn(0).Click
+		For i = 0 To UBound(data)
+			If Not IsEmpty(data(i)) And Not IsDate(data(i)) Then
+				WpfWindow("OpenText MyFlight Sample").WpfEdit("byNameWatermark").Set data(i)
+			ElseIf Not IsEmpty(data(i)) Then
+				WpfWindow("OpenText MyFlight Sample").WpfCalendar("byDatePicker").SetDate data(i)
+			End If
+    		Next
+   		WpfWindow("OpenText MyFlight Sample").WpfButton("SEARCH").Click
+		WpfWindow("OpenText MyFlight Sample").WpfTable("ordersDataGrid").SelectCell 0,0
+		WpfWindow("OpenText MyFlight Sample").WpfButton("SELECT ORDER").Click
+	End If
+	
+	If WpfWindow("OpenText MyFlight Sample").WpfObject("ORDER DETAILS").Exist Then
+		Reporter.ReportEvent micPass, "Search Order", "Order has been searched successfully"
+		LogResult micPass, "Search Order", "Order has been searched successfully"
+	Else
+		Err.Raise vbObjectError + 1000, "Search Order", "Order do not exist"
+		HandleErrorAndExit("Search Order")
+	End If
+	WpfWindow("OpenText MyFlight Sample").WpfButton("NEW SEARCH").Click
+End Function
+
+Function closeApplication()
+	WpfWindow("OpenText MyFlight Sample").Close
+	If WpfWindow("OpenText MyFlight Sample").WpfButton("FIND FLIGHTS").Exist Then
+		Reporter.ReportEvent micFail, "Close Application", "Application has not closed"
+		LogResult micFail, "Close Application", "Application has not closed"
+	Else
+		Reporter.ReportEvent micPass, "Close Application", "Application has been successfully closed"
+		LogResult micPass, "Close Application", "Application has been successfully closed"
+	End If
+End Function

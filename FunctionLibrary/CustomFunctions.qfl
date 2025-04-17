@@ -1,0 +1,39 @@
+﻿' ================================================================================================
+' This Function Library overrides inbuilt uft one functions using RegisterUserFunc for SelectComboBox and Click
+' ================================================================================================
+RegisterUserFunc "WpfButton", "Click", "CustomClick"
+RegisterUserFunc "WpfComboBox", "Select", "SelectComboBox"
+
+Function SelectComboBox(ObjWebList,strText)
+    Reporter.ReportEvent micDone,"Using override Weblist function","Temporarily Override function being called"
+    If ObjWebList.Exist And ObjWebList.GetROProperty("enabled") = True Then
+        Reporter.ReportEvent micPass,"ComboBox Should Exist and should be Enabled","ComboBox object found"
+        If INSTR(1,ObjWebList.GetROProperty("all items"),strText,1) >0 Then
+            Reporter.ReportEvent micPass,"ComboBox Item Check","Required value "& strText &" exists in the Weblist"
+        Else
+            Reporter.ReportEvent micFail,"ComboBox Item Check","Required value "& strText &" does not exists in the Weblist"
+            Exit Function
+        End If         
+        ObjWebList.Select strText 'Selecting the required item from the WebList
+        Reporter.ReportEvent micPass,"ComboBox Item should be selected","ComboBox Item " & strText & " was selected"
+    Else
+        Reporter.ReportEvent micFail,"ComboBox Should Exist","ComboBox object does not exist"
+    End If
+End Function
+
+Public Function CustomClick(TestObject)
+    Reporter.ReportEvent micDone,"Using override Click function","Temporarily Override function being called"
+    If TestObject.Exist Then
+        Reporter.ReportEvent micPass,"TestObject Should Exist","TestObject object found"
+        If TestObject.GetROProperty("visible") = True Then
+            Reporter.ReportEvent micPass,"TestObject should be visible","Required TestObject is visible"
+        Else
+            Reporter.ReportEvent micFail,"TestObject should be visible","Required TestObject is not visible"
+            Exit Function
+        End If
+         TestObject.Click
+        Reporter.ReportEvent micPass,"TestObject should be Clicked","TestObject was Clicked"
+    Else
+        Reporter.ReportEvent micFail,"TestObject Should Exist","TestObject object does not exist"
+    End If
+End Function
