@@ -80,7 +80,7 @@ This project can also be run using Jenkins by setting up a declarative pipeline 
 2. Go to Manage Jenkins > Plugin Manager, install:
 - Micro Focus Application Automation Tools Plugin
 - HTML Publisher Plugin
-- 
+  
 **🪜 Steps to Set Up Jenkins Pipeline**
 
 **1. Go to Manage Nodes and Clouds > New Node**
