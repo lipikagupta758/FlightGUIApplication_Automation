@@ -61,7 +61,7 @@ Click Run to execute the test.
 After the test completes, check the Results/ folder for the HTML report.
 
 
-**###📄 Test Reports**
+##📄 Test Reports
 Located in the Results/ directory.
 
 Reports are generated as HTMLReport.html.
